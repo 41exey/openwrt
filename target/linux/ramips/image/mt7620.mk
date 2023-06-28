@@ -1296,11 +1296,35 @@ define Device/xiaomi_miwifi-mini
 endef
 TARGET_DEVICES += xiaomi_miwifi-mini
 
+define Device/dsa-migration
+  DEVICE_COMPAT_VERSION := 1.1
+  DEVICE_COMPAT_MESSAGE := Config cannot be migrated from swconfig to DSA
+endef
+
+define Device/nand
+  $(Device/dsa-migration)
+  BLOCKSIZE := 128k
+  KERNEL_SIZE := 4096k
+  PAGESIZE := 2048
+  UBINIZE_OPTS := -E 5
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+
+define Device/xiaomi_nand_separate
+  $(Device/nand)
+  $(Device/uimage-lzma-loader)
+  DEVICE_VENDOR := Xiaomi
+  IMAGES += kernel1.bin rootfs0.bin
+  IMAGE/kernel1.bin := append-kernel
+  IMAGE/rootfs0.bin := append-ubi | check-size
+endef
+
 define Device/xiaomi_mi-wi-fi-router-3
+  $(Device/xiaomi_nand_separate)
   SOC := mt7620a
   IMAGE_SIZE := 15872k
   DEVICE_VENDOR := Xiaomi
-  DEVICE_MODEL := MiWiFi Mini
+  DEVICE_MODEL := Mi Wi-Fi Router 3
   DEVICE_PACKAGES := kmod-mt76x2 kmod-usb2 kmod-usb-ohci
 endef
 TARGET_DEVICES += xiaomi_mi-wi-fi-router-3

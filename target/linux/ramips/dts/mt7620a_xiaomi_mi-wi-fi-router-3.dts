@@ -10,6 +10,10 @@
 	compatible = "xiaomi,mi-wi-fi-router-3", "ralink,mt7620a-soc";
 	model = "Xiaomi Mi Wi-Fi Router 3";
 
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
+
 	memory@0 {
 		device_type = "memory";
 		reg = <0x0 0x8000000>;
